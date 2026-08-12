@@ -1,0 +1,31 @@
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.egg-info/
+dist/
+build/
+
+# Virtual env
+.venv/
+venv/
+
+# IDE
+.vscode/
+.idea/
+
+# Testing
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/
+
+# Config with secrets (keep example)
+config.yaml
+.env
+
+# OS
+.DS_Store
+Thumbs.db
+
+# AgentCore local state
+.agentcore/

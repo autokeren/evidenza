@@ -1,0 +1,21 @@
+# releaseproof runtime configuration
+# Copy to config.yaml and adjust as needed (config.yaml is gitignored).
+
+model:
+  # Model provider: bedrock | anthropic | openai | custom
+  provider: bedrock
+  # Model ID (provider-specific)
+  # Bedrock examples: anthropic.claude-sonnet-4-20250514-v1:0
+  # Anthropic: claude-sonnet-4-20250514
+  # OpenAI: gpt-4o
+  id: anthropic.claude-sonnet-4-20250514-v1:0
+
+agent:
+  # Conversation manager: sliding | summarizing
+  conversation_manager: sliding
+  # Max agent iterations (safety net, 0 = unlimited)
+  max_iterations: 20
+
+deploy:
+  # Deploy to Amazon Bedrock AgentCore (optional, +value for hackathon)
+  agentcore: false
