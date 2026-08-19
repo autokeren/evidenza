@@ -18,7 +18,11 @@ def main() -> None:
     )
     parser.add_argument("prompt", nargs="?", help="Task prompt for the agent")
     parser.add_argument("--proof-replay", metavar="FILE", help="Replay a pre-recorded proof run (no API key needed)")
-    parser.add_argument("--provider", choices=["bedrock", "anthropic", "openai"], help="Override model provider")
+    parser.add_argument("--provider", choices=["proxy", "anthropic", "bedrock"], default="proxy",
+                        help="Model provider (default: proxy = local Anthropic-compatible proxy)")
+    parser.add_argument("--model", help="Override model id")
+    parser.add_argument("--proxy-url", help="Override proxy base URL (provider=proxy)")
+    parser.add_argument("--verbose", "-v", action="store_true", help="Show full agent output")
     args = parser.parse_args()
 
     if args.proof_replay:
@@ -30,9 +34,34 @@ def main() -> None:
         parser.print_help()
         sys.exit(1)
 
-    # TODO(M1): wire to Strands agent runtime
+    from releaseproof.runtime import load_config
+    from releaseproof import agent
+
+    config = load_config()
+    if args.provider:
+        config.model_provider = args.provider
+    if args.model:
+        config.model_id = args.model
+    if args.proxy_url:
+        config.proxy_base_url = args.proxy_url
+
+    print(f"[releaseproof] provider={config.model_provider} model={config.model_id}")
     print(f"[releaseproof] prompt: {args.prompt!r}")
-    print("[releaseproof] agent runtime not yet wired — see EXECUTION-PLAN.md")
+    print("[releaseproof] running agent ...\n")
+
+    out = agent.run(args.prompt, config)
+
+    print("\n" + "=" * 60)
+    print(f"VERDICT: {out['verdict']}")
+    print(f"stop_reason: {out['stop_reason']}")
+    if out["tool_metrics"]:
+        print("tools:")
+        for name, m in out["tool_metrics"].items():
+            print(f"  {name}: {m['success']}/{m['calls']} ok, {m['errors']} err")
+    if args.verbose and out["content"]:
+        print("\n--- agent output ---")
+        print(out["content"])
+    print("=" * 60)
 
 
 if __name__ == "__main__":

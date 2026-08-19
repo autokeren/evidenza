@@ -2,19 +2,33 @@
 # Copy to config.yaml and adjust as needed (config.yaml is gitignored).
 
 model:
-  # Model provider: bedrock | anthropic | openai | custom
-  provider: bedrock
-  # Model ID (provider-specific)
-  # Bedrock examples: anthropic.claude-sonnet-4-20250514-v1:0
-  # Anthropic: claude-sonnet-4-20250514
-  # OpenAI: gpt-4o
-  id: anthropic.claude-sonnet-4-20250514-v1:0
+  # Model provider: proxy | anthropic | bedrock
+  #   proxy      = local Anthropic-Messages-compatible proxy (default, no cloud creds)
+  #   anthropic  = direct Anthropic API (needs ANTHROPIC_API_KEY)
+  #   bedrock    = Amazon Bedrock (needs AWS creds + model access enabled)
+  provider: proxy
+  # Model ID (provider-specific).
+  #   proxy (claude-cf, glm-5.2):  claude-sonnet-4-20250514  (proxy rewrites it)
+  #   proxy (claude-do, kimi-k3):  kimi-k3
+  #   anthropic:                  claude-sonnet-4-20250514
+  #   bedrock:                    anthropic.claude-sonnet-4-20250514-v1:0
+  id: claude-sonnet-4-20250514
+
+proxy:
+  # Base URL of the local proxy (provider=proxy only).
+  #   claude-cf (Cloudflare, glm-5.2): http://127.0.0.1:8787
+  #   claude-do (DigitalOcean, kimi-k3): http://127.0.0.1:8788
+  base_url: http://127.0.0.1:8787
+  # API key sent to the proxy (local proxies usually ignore this).
+  api_key: dummy
 
 agent:
   # Conversation manager: sliding | summarizing
   conversation_manager: sliding
   # Max agent iterations (safety net, 0 = unlimited)
   max_iterations: 20
+  # Max output tokens per model call
+  max_tokens: 1024
 
 deploy:
   # Deploy to Amazon Bedrock AgentCore (optional, +value for hackathon)
