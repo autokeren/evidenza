@@ -89,8 +89,15 @@ def _build_model(config: RuntimeConfig) -> Model:
     raise ValueError(f"unknown model provider: {config.model_provider!r}")
 
 
-def create_agent(config: RuntimeConfig | None = None) -> Agent:
-    """Create a configured Strands Agent with all releaseproof tools."""
+def create_agent(config: RuntimeConfig | None = None, proofs=None) -> Agent:
+    """Create a configured Strands Agent with all releaseproof tools.
+
+    Args:
+        config: Runtime config (loaded from defaults if None).
+        proofs: Optional ProofManager. When provided, a human-in-the-loop
+            approval hook is registered so the ``deploy`` tool is gated behind
+            explicit human approval of a SHIP verdict.
+    """
     config = config or load_config()
     model = _build_model(config)
 
@@ -110,17 +117,30 @@ def create_agent(config: RuntimeConfig | None = None) -> Agent:
         system_prompt=SYSTEM_PROMPT,
         callback_handler=None,  # quiet; we read results programmatically
     )
+
+    # Register the human-in-the-loop SHIP approval hook when a ProofManager
+    # is provided. This gates `deploy` behind human approval.
+    if proofs is not None:
+        from strands.hooks import BeforeToolCallEvent as _BTCE
+        from .approval import make_approval_hook
+        agent.hooks.add_callback(_BTCE, make_approval_hook(proofs))
+
     return agent
 
 
-def run(prompt: str, config: RuntimeConfig | None = None) -> dict[str, Any]:
+def run(prompt: str, config: RuntimeConfig | None = None, proofs=None) -> dict[str, Any]:
     """Run the releaseproof agent with a user prompt.
 
+    Args:
+        prompt: The task prompt.
+        config: Runtime config (loaded from defaults if None).
+        proofs: Optional ProofManager enabling human-in-the-loop deploy gating.
+
     Returns a dict with: result (AgentResult), verdict (str), content (str),
-    stop_reason (str|None), tool_metrics (dict).
+    stop_reason (str|None), tool_metrics (dict), interrupts (list[dict]).
     """
     config = config or load_config()
-    agent = create_agent(config)
+    agent = create_agent(config, proofs=proofs)
     logger.debug("running agent prompt (%d chars)", len(prompt))
 
     result = agent(prompt)
@@ -140,12 +160,23 @@ def run(prompt: str, config: RuntimeConfig | None = None) -> dict[str, Any]:
             for k, v in result.metrics.tool_metrics.items()
         }
 
+    # Extract any interrupts that fired (human-in-the-loop pauses).
+    interrupts: list[dict[str, Any]] = []
+    if hasattr(result, "interrupts"):
+        for it in (result.interrupts or []):
+            interrupts.append({
+                "id": getattr(it, "id", None),
+                "name": getattr(it, "name", None),
+                "reason": getattr(it, "reason", None),
+            })
+
     return {
         "result": result,
         "verdict": verdict,
         "content": content,
         "stop_reason": getattr(result, "stop_reason", None),
         "tool_metrics": tool_metrics,
+        "interrupts": interrupts,
     }
 
 
