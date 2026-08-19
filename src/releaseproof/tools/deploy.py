@@ -32,7 +32,7 @@ def deploy(app_path: str, proof_id: str) -> str:
     # 4. Return URL
 
     # For demo: simulate deploy with a hash-based URL
-    deploy_hash = hashlib.sha8(f"{proof_id}{app_path}{time.time()}".encode()).hexdigest()[:8]
+    deploy_hash = hashlib.sha256(f"{proof_id}{app_path}{time.time()}".encode()).hexdigest()[:8]
     url = f"https://app-{deploy_hash}.releaseproof.dev"
 
     # Simulate brief deploy time
