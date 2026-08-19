@@ -1,9 +1,9 @@
-"""releaseproof CLI entry point.
+"""evidenza CLI entry point.
 
 Usage:
-    releaseproof "<prompt>"                  # run agent with prompt
-    releaseproof --proof-replay <file.json>   # replay pre-recorded proof (no API key)
-    releaseproof --provider <p> "<prompt>"    # override model provider
+    evidenza "<prompt>"                  # run agent with prompt
+    evidenza --proof-replay <file.json>   # replay pre-recorded proof (no API key)
+    evidenza --provider <p> "<prompt>"    # override model provider
 """
 from __future__ import annotations
 
@@ -13,7 +13,7 @@ import sys
 
 def main() -> None:
     parser = argparse.ArgumentParser(
-        prog="releaseproof",
+        prog="evidenza",
         description="Evidence-led autonomous release verification agent (Strands Agents SDK).",
     )
     parser.add_argument("prompt", nargs="?", help="Task prompt for the agent")
@@ -26,7 +26,7 @@ def main() -> None:
     args = parser.parse_args()
 
     if args.proof_replay:
-        from releaseproof.proof.replay import render_proof_card
+        from evidenza.proof.replay import render_proof_card
         render_proof_card(args.proof_replay)
         return
 
@@ -34,8 +34,8 @@ def main() -> None:
         parser.print_help()
         sys.exit(1)
 
-    from releaseproof.runtime import load_config
-    from releaseproof import agent
+    from evidenza.runtime import load_config
+    from evidenza import agent
 
     config = load_config()
     if args.provider:
@@ -45,9 +45,9 @@ def main() -> None:
     if args.proxy_url:
         config.proxy_base_url = args.proxy_url
 
-    print(f"[releaseproof] provider={config.model_provider} model={config.model_id}")
-    print(f"[releaseproof] prompt: {args.prompt!r}")
-    print("[releaseproof] running agent ...\n")
+    print(f"[evidenza] provider={config.model_provider} model={config.model_id}")
+    print(f"[evidenza] prompt: {args.prompt!r}")
+    print("[evidenza] running agent ...\n")
 
     out = agent.run(args.prompt, config)
 

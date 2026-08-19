@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """End-to-end smoke test: Strands Agent via claude-cf proxy (localhost:8787).
 
-Runs the releaseproof agent with a trivial prompt that exercises a tool,
+Runs the evidenza agent with a trivial prompt that exercises a tool,
 proving the Strands + tool + proxy stack works together.
 """
 from __future__ import annotations
@@ -15,10 +15,10 @@ sys.path.insert(0, str(Path(__file__).resolve().parent.parent / "src"))
 from strands import Agent
 from strands.models.anthropic import AnthropicModel
 
-from releaseproof.tools.file import read_file, write_file
-from releaseproof.tools.git import git_sha, git_commit
-from releaseproof.tools.verify import verify_url
-from releaseproof.tools.shell import shell
+from evidenza.tools.file import read_file, write_file
+from evidenza.tools.git import git_sha, git_commit
+from evidenza.tools.verify import verify_url
+from evidenza.tools.shell import shell
 
 PROXY_URL = "http://127.0.0.1:8787"
 MODEL_ID = "claude-sonnet-4-20250514"  # proxy ignores model name, uses glm-5.2
@@ -34,15 +34,15 @@ def main() -> int:
         model=model,
         tools=[read_file, write_file, git_sha, git_commit, verify_url, shell],
         system_prompt=(
-            "You are releaseproof, an evidence-led release verification agent. "
+            "You are evidenza, an evidence-led release verification agent. "
             "Use the provided tools when asked to inspect files or run commands. "
             "Be concise."
         ),
     )
 
     # Trivial task: write a file, read it back, confirm its content.
-    test_file = "/tmp/releaseproof_e2e_test.txt"
-    test_content = "releaseproof e2e smoke test ok"
+    test_file = "/tmp/evidenza_e2e_test.txt"
+    test_content = "evidenza e2e smoke test ok"
 
     prompt = (
         f"Use the write_file tool to write this exact content to {test_file}: "

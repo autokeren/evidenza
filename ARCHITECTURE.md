@@ -1,4 +1,4 @@
-# 🏗️ Architecture — releaseproof
+# 🏗️ Architecture — evidenza
 
 > Evidence-led autonomous release verification agent built on the Strands Agents SDK.
 
@@ -15,7 +15,7 @@
 
 ```
                    ┌──────────────────────────┐
-                   │     releaseproof CLI      │
+                   │     evidenza CLI      │
                    └────────────┬─────────────┘
                                 │
                    ┌────────────▼─────────────┐
@@ -54,8 +54,8 @@
 ## 📁 Project Structure
 
 ```
-releaseproof/
-├── src/releaseproof/
+evidenza/
+├── src/evidenza/
 │   ├── cli.py              CLI entry (argparse, --proof-replay)
 │   ├── agent.py            Strands Agent setup + run loop
 │   ├── runtime.py          Config loader
@@ -132,7 +132,7 @@ User prompt: "/safe-deploy build X with tests"
 
 ## 🚀 Deployment (Optional)
 
-releaseproof can deploy to Amazon Bedrock AgentCore Runtime for
+evidenza can deploy to Amazon Bedrock AgentCore Runtime for
 production-scale operation. See `agentcore.yaml` (to be added in M4).
 
 ## ⚠️ Research Questions (to answer in M1)

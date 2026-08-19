@@ -1,6 +1,6 @@
 """Verify URL tool: check if a deployed URL is alive (lean, ~40 lines).
 
-Fresh implementation for releaseproof. No code copied from any prior project.
+Fresh implementation for evidenza. No code copied from any prior project.
 """
 from __future__ import annotations
 

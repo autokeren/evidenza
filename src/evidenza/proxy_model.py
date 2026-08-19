@@ -6,7 +6,7 @@ The proxy's non-streaming `/v1/messages` response is fully correct and
 complete, so we sidestep streaming entirely by issuing a single POST and
 synthesizing Strands StreamEvents from the returned message.
 
-Fresh implementation for releaseproof. No code copied from any prior project.
+Fresh implementation for evidenza. No code copied from any prior project.
 """
 from __future__ import annotations
 

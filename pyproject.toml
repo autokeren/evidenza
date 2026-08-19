@@ -3,7 +3,7 @@ requires = ["hatchling"]
 build-backend = "hatchling.build"
 
 [project]
-name = "releaseproof"
+name = "evidenza"
 version = "0.1.0"
 description = "Evidence-led autonomous release verification agent built on the Strands Agents SDK"
 readme = "README.md"
@@ -44,14 +44,14 @@ dev = [
 ]
 
 [project.scripts]
-releaseproof = "releaseproof.cli:main"
+evidenza = "evidenza.cli:main"
 
 [project.urls]
-Homepage = "https://github.com/ajat/releaseproof"
-Repository = "https://github.com/ajat/releaseproof"
+Homepage = "https://github.com/autokeren/evidenza"
+Repository = "https://github.com/autokeren/evidenza"
 
 [tool.hatch.build.targets.wheel]
-packages = ["src/releaseproof"]
+packages = ["src/evidenza"]
 
 [tool.ruff]
 line-length = 120

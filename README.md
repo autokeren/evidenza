@@ -1,8 +1,8 @@
-# releaseproof
+# evidenza
 
 **Evidence-led autonomous release verification agent built on the [Strands Agents SDK](https://strandsagents.com/).**
 
-releaseproof autonomously plans acceptance criteria, records real verification
+evidenza autonomously plans acceptance criteria, records real verification
 evidence, and emits a **SHIP / BLOCKED / NEEDS_HUMAN_REVIEW** verdict. The agent
 handles the routine verification work in the background — it only surfaces to a
 human for the one decision that matters: *should we ship?*
@@ -16,12 +16,12 @@ Built for the **Agents for Humans** hackathon (AWS × Strands Agents SDK).
 Judges can test the proof-rendering system without any external API keys:
 
 ```bash
-git clone https://github.com/ajat/releaseproof
-cd releaseproof
+git clone https://github.com/ajat/evidenza
+cd evidenza
 pip install -e .
 
 # Replay a pre-recorded, verified proof run
-releaseproof --proof-replay examples/demo/proof-run.json
+evidenza --proof-replay examples/demo/proof-run.json
 ```
 
 This renders a visual Release Card from a pre-recorded proof artifact.
@@ -34,11 +34,11 @@ It does not run tests dynamically or require any model provider.
 ```bash
 # Option A: AWS Bedrock (default)
 export AWS_PROFILE=default
-releaseproof "/safe-deploy build a checkout API with tests"
+evidenza "/safe-deploy build a checkout API with tests"
 
 # Option B: Anthropic
 export ANTHROPIC_API_KEY=sk-...
-releaseproof --provider anthropic "/safe-deploy build a checkout API with tests"
+evidenza --provider anthropic "/safe-deploy build a checkout API with tests"
 ```
 
 The agent will:
@@ -54,7 +54,7 @@ The agent will:
 
 ```
                    ┌──────────────────────────┐
-                   │     releaseproof CLI      │
+                   │     evidenza CLI      │
                    └────────────┬─────────────┘
                                 │
                    ┌────────────▼─────────────┐
@@ -98,8 +98,8 @@ See [ARCHITECTURE.md](./ARCHITECTURE.md) for the full design.
 ### Install
 
 ```bash
-git clone https://github.com/ajat/releaseproof
-cd releaseproof
+git clone https://github.com/ajat/evidenza
+cd evidenza
 pip install -e .
 
 # With AgentCore support (optional)
@@ -144,14 +144,14 @@ This project is submitted to the **Agents for Humans** hackathon (AWS × Strands
 
 ## Acknowledgments & Prior Work
 
-This project, **releaseproof**, is a fresh implementation built during the
+This project, **evidenza**, is a fresh implementation built during the
 Agents for Humans hackathon (Aug 10 – Sep 14, 2026). The release verification
 concept (evidence-led SHIP/BLOCKED/NEEDS_HUMAN_REVIEW verdict system,
 safe-deploy workflow) builds upon ideas explored in the author's prior
 open-source project, [autokeren](https://github.com/autokeren/autokeren)
 (MIT license).
 
-releaseproof is a new, lean codebase written from scratch during the
+evidenza is a new, lean codebase written from scratch during the
 submission period, using the Strands Agents SDK as the agent orchestrator.
 No code was directly copied from autokeren; the concepts were reimplemented
 in a minimal form tailored to demonstrate the release verification agent

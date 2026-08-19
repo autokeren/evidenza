@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
-"""releaseproof demo runner — deterministic full-flow walkthrough.
+"""evidenza demo runner — deterministic full-flow walkthrough.
 
 Records a complete release verification run end-to-end using the REAL
-releaseproof components (ProofManager, compute_verdict, approval hook,
+evidenza components (ProofManager, compute_verdict, approval hook,
 render_proof_card), so the demo is reliable on video without depending on a
 flaky proxy model to call the right tools in the right order.
 
@@ -32,9 +32,9 @@ ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT / "src"))
 sys.path.insert(0, str(ROOT))
 
-from releaseproof.proof.manager import ProofManager
-from releaseproof.proof.verdict import compute_verdict
-from releaseproof.proof.replay import render_proof_card
+from evidenza.proof.manager import ProofManager
+from evidenza.proof.verdict import compute_verdict
+from evidenza.proof.replay import render_proof_card
 
 
 # ANSI colors for terminal readability on video.
@@ -114,7 +114,7 @@ def run_tests(block: bool) -> list[tuple[str, str, str]]:
 
 
 def main() -> int:
-    parser = argparse.ArgumentParser(description="releaseproof demo run")
+    parser = argparse.ArgumentParser(description="evidenza demo run")
     parser.add_argument("--block", action="store_true",
                         help="Simulate a failing test to demonstrate the BLOCKED path")
     parser.add_argument("--proofs-dir", default=None,
@@ -125,7 +125,7 @@ def main() -> int:
     proofs_dir = Path(args.proofs_dir) if args.proofs_dir else Path(tempfile.mkdtemp())
     pm = ProofManager(proofs_dir)
 
-    banner("releaseproof — evidence-led autonomous release verification", C["C"])
+    banner("evidenza — evidence-led autonomous release verification", C["C"])
     print(dim(f"  proof store: {proofs_dir}"))
     print(dim(f"  mode: {'BLOCKED demo (simulated failure)' if args.block else 'SHIP demo (all pass)'}"))
 
@@ -164,7 +164,7 @@ def main() -> int:
 
     if verdict != "SHIP":
         banner("DEMO: BLOCKED path — deploy is not attempted (no SHIP verdict)", C["Y"])
-        print(yellow("    A non-SHIP verdict means releaseproof stops. No human approval is needed"))
+        print(yellow("    A non-SHIP verdict means evidenza stops. No human approval is needed"))
         print(yellow("    because the evidence itself says the release is not ready."))
         print()
         render_proof_card(str(proofs_dir / f"{pid}.json"))
@@ -172,7 +172,7 @@ def main() -> int:
 
     # ── 5. Human-in-the-loop gate (no approval) ──────────────────────
     step(5, "Attempt deploy WITHOUT human approval (should be blocked)")
-    from releaseproof.approval import make_approval_hook
+    from evidenza.approval import make_approval_hook
     from strands.hooks import BeforeToolCallEvent
     import asyncio
 
@@ -231,7 +231,7 @@ def main() -> int:
 
     banner("Demo complete — evidence-led SHIP, approved by human, safe to deploy", C["G"])
     print(dim("    Judges can replay this proof with:"))
-    print(dim(f"      releaseproof --proof-replay {proof_file}"))
+    print(dim(f"      evidenza --proof-replay {proof_file}"))
     print(dim("    ...requires ZERO API keys — the evidence is the artifact."))
     return 0
 

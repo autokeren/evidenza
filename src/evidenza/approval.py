@@ -1,6 +1,6 @@
 """Human-in-the-loop SHIP approval via Strands hooks.
 
-The core safety mechanism of releaseproof: the agent may gather evidence and
+The core safety mechanism of evidenza: the agent may gather evidence and
 compute a verdict autonomously, but it CANNOT deploy without a human
 explicitly approving the SHIP decision. We enforce this by registering a
 ``BeforeToolCallEvent`` hook that intercepts the ``deploy`` tool call: if the
@@ -10,7 +10,7 @@ referenced proof has not been approved by a human, the hook raises an
 This is the "Agents for Humans" angle made concrete: autonomous up to the
 point of impact, human-in-the-loop at the moment that matters.
 
-Fresh implementation for releaseproof. No code copied from any prior project.
+Fresh implementation for evidenza. No code copied from any prior project.
 """
 from __future__ import annotations
 

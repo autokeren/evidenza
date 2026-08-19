@@ -12,8 +12,8 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent / "src"))
 
-from releaseproof.agent import _extract_verdict
-from releaseproof.runtime import RuntimeConfig, load_config
+from evidenza.agent import _extract_verdict
+from evidenza.runtime import RuntimeConfig, load_config
 
 
 # --- verdict extraction -------------------------------------------------

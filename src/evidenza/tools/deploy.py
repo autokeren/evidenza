@@ -1,6 +1,6 @@
 """Deploy tool: simplified publish (lean, ~80 lines).
 
-Fresh implementation for releaseproof. No code copied from any prior project.
+Fresh implementation for evidenza. No code copied from any prior project.
 
 This is a SIMPLIFIED deploy for demo purposes. In a real scenario, this would
 publish to a platform (e.g., Cloudflare Pages, AWS, etc.). For the hackathon
@@ -33,7 +33,7 @@ def deploy(app_path: str, proof_id: str) -> str:
 
     # For demo: simulate deploy with a hash-based URL
     deploy_hash = hashlib.sha256(f"{proof_id}{app_path}{time.time()}".encode()).hexdigest()[:8]
-    url = f"https://app-{deploy_hash}.releaseproof.dev"
+    url = f"https://app-{deploy_hash}.evidenza.dev"
 
     # Simulate brief deploy time
     time.sleep(1)

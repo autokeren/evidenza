@@ -6,7 +6,7 @@ Manages acceptance criteria lifecycle:
 Each proof run is stored as JSON (proof-run.json) and can be replayed
 without an API key (for judge evaluation).
 
-Fresh implementation for releaseproof. No code copied from any prior project.
+Fresh implementation for evidenza. No code copied from any prior project.
 """
 from __future__ import annotations
 
@@ -44,7 +44,7 @@ class ProofManager:
     """
 
     def __init__(self, proofs_dir: Path | None = None) -> None:
-        self.proofs_dir = proofs_dir or Path.cwd() / ".releaseproof" / "proofs"
+        self.proofs_dir = proofs_dir or Path.cwd() / ".evidenza" / "proofs"
         self.proofs_dir.mkdir(parents=True, exist_ok=True)
 
     # -- internal helpers ------------------------------------------------

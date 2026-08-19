@@ -1,6 +1,6 @@
 """Strands Agent setup + run loop.
 
-Creates the Strands Agent with all releaseproof tools, a system prompt that
+Creates the Strands Agent with all evidenza tools, a system prompt that
 drives an evidence-led verification loop, and a conversation manager. Exposes
 a single `run(prompt, config)` entrypoint that returns the agent's result and
 the computed release verdict.
@@ -24,7 +24,7 @@ from .tools.verify import verify_url
 logger = logging.getLogger(__name__)
 
 SYSTEM_PROMPT = """\
-You are releaseproof, an evidence-led autonomous release verification agent.
+You are evidenza, an evidence-led autonomous release verification agent.
 
 Your job: given a release task, gather CONCRETE EVIDENCE before declaring a
 release ready to ship. Never assert readiness without evidence.
@@ -90,7 +90,7 @@ def _build_model(config: RuntimeConfig) -> Model:
 
 
 def create_agent(config: RuntimeConfig | None = None, proofs=None) -> Agent:
-    """Create a configured Strands Agent with all releaseproof tools.
+    """Create a configured Strands Agent with all evidenza tools.
 
     Args:
         config: Runtime config (loaded from defaults if None).
@@ -129,7 +129,7 @@ def create_agent(config: RuntimeConfig | None = None, proofs=None) -> Agent:
 
 
 def run(prompt: str, config: RuntimeConfig | None = None, proofs=None) -> dict[str, Any]:
-    """Run the releaseproof agent with a user prompt.
+    """Run the evidenza agent with a user prompt.
 
     Args:
         prompt: The task prompt.

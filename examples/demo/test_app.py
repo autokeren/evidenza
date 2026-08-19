@@ -1,4 +1,4 @@
-"""Test suite for the demo checkout app — evidence source for releaseproof.
+"""Test suite for the demo checkout app — evidence source for evidenza.
 
 TODO(M3): expand test coverage.
 """

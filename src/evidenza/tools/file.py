@@ -1,6 +1,6 @@
 """File tools: read_file and write_file (lean, ~100 lines total).
 
-Fresh implementation for releaseproof. No code copied from any prior project.
+Fresh implementation for evidenza. No code copied from any prior project.
 """
 from __future__ import annotations
 

@@ -1,5 +1,5 @@
 """Tests for verdict logic."""
-from releaseproof.proof.verdict import compute_verdict
+from evidenza.proof.verdict import compute_verdict
 
 
 def test_all_passed_returns_ship():

@@ -1,6 +1,6 @@
-"""Demo checkout app — the test target for releaseproof verification.
+"""Demo checkout app — the test target for evidenza verification.
 
-This is a simple HTTP server that simulates a checkout API. The releaseproof
+This is a simple HTTP server that simulates a checkout API. The evidenza
 agent writes code like this, runs tests against it, and records the evidence.
 
 TODO(M3): expand with edge cases (invalid card, timeout handling).

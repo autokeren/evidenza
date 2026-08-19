@@ -1,4 +1,4 @@
-# releaseproof runtime configuration
+# evidenza runtime configuration
 # Copy to config.yaml and adjust as needed (config.yaml is gitignored).
 
 model:

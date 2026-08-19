@@ -1,4 +1,4 @@
-# releaseproof — Demo Guide & Narration Script
+# evidenza — Demo Guide & Narration Script
 
 > Evidence-led autonomous release verification agent, built on the Strands Agents SDK.
 > Track: **Professional Agents** — Agents for Humans hackathon.
@@ -10,7 +10,7 @@ API keys, so it records reliably.
 ## Prerequisites
 
 ```bash
-cd /home/ubuntu/releaseproof
+cd /home/ubuntu/evidenza
 source .venv/bin/activate
 ```
 
@@ -42,14 +42,14 @@ What it shows, in order:
 python examples/demo/run_demo.py --block
 ```
 
-Shows a failing test → `BLOCKED` verdict → releaseproof stops **before** any
+Shows a failing test → `BLOCKED` verdict → evidenza stops **before** any
 human is bothered. The evidence itself says the release isn't ready; no
 approval is needed because nothing is deployed.
 
 ### Part C — Judge replay (the self-contained artifact, ~10s)
 
 ```bash
-python -m releaseproof.cli --proof-replay examples/demo/proof-run.json
+python -m evidenza.cli --proof-replay examples/demo/proof-run.json
 ```
 
 Judges can replay the exact proof artifact with **zero API keys** — the
@@ -58,7 +58,7 @@ submission self-contained for evaluation.
 
 ## Narration (for the ~90s video)
 
-> This is **releaseproof** — an evidence-led autonomous release agent built on
+> This is **evidenza** — an evidence-led autonomous release agent built on
 > the Strands Agents SDK. It verifies a release by gathering concrete evidence
 > *before* declaring it ready to ship.
 >
@@ -79,11 +79,11 @@ submission self-contained for evaluation.
 >
 > *[Part B runs]*
 >
-> And if a test fails, the verdict is BLOCKED — releaseproof stops before any
+> And if a test fails, the verdict is BLOCKED — evidenza stops before any
 > human is even asked. The evidence decides; the human only decides when the
 > evidence says ship.
 >
-> releaseproof: evidence-led, human-gated, replayable.
+> evidenza: evidence-led, human-gated, replayable.
 
 ## Why this is defensible (for judges)
 

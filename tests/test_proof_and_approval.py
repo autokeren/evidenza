@@ -2,7 +2,7 @@
 human-in-the-loop approval hook.
 
 These are deterministic (no network / no live model) and cover the two safety
-properties that make releaseproof defensible:
+properties that make evidenza defensible:
   1. A SHIP verdict is never auto-deployed — it must pass the approval hook.
   2. Approving a non-SHIP verdict is rejected.
 """
@@ -15,9 +15,9 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent / "src"))
 
-from releaseproof.proof.manager import ProofManager
-from releaseproof.proof.replay import render_proof_card
-from releaseproof.approval import make_approval_hook
+from evidenza.proof.manager import ProofManager
+from evidenza.proof.replay import render_proof_card
+from evidenza.approval import make_approval_hook
 from strands.hooks import BeforeToolCallEvent
 from strands.interrupt import InterruptException
 

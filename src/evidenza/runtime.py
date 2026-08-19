@@ -1,4 +1,4 @@
-"""Runtime config loader for releaseproof.
+"""Runtime config loader for evidenza.
 
 Loads config.yaml (or falls back to config.example.yaml defaults), resolves
 model provider, and returns a typed config object. Supports a `proxy`
@@ -15,7 +15,7 @@ from pathlib import Path
 
 @dataclass
 class RuntimeConfig:
-    """Runtime configuration for releaseproof."""
+    """Runtime configuration for evidenza."""
 
     model_provider: str = "proxy"
     model_id: str = "claude-sonnet-4-20250514"

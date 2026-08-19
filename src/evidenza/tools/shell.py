@@ -1,6 +1,6 @@
 """Shell tool: run a command and capture output (lean, ~80 lines).
 
-Fresh implementation for releaseproof. No code copied from any prior project.
+Fresh implementation for evidenza. No code copied from any prior project.
 """
 from __future__ import annotations
 

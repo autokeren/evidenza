@@ -4,7 +4,7 @@ Judges can evaluate the proof system WITHOUT any API key — they replay a
 pre-recorded, verified proof artifact. This is the offline-evidence angle
 that makes the hackathon submission self-contained.
 
-Fresh implementation for releaseproof. No code copied from any prior project.
+Fresh implementation for evidenza. No code copied from any prior project.
 """
 from __future__ import annotations
 
@@ -65,7 +65,7 @@ def _render_rich(data: dict[str, Any]) -> None:
     approved = data.get("approved", False)
     approved_str = "✓ APPROVED" if approved else "✗ NOT APPROVED"
 
-    title = f"{vsym}  {data.get('title', 'releaseproof proof')}"
+    title = f"{vsym}  {data.get('title', 'evidenza proof')}"
     header = Text.assemble(
         ("Verdict: ", "bold"), (f"{verdict}\n", f"bold {vstyle}"),
         ("Proof ID: ", "dim"), (f"{data.get('proof_id','')}\n", "white"),
@@ -105,7 +105,7 @@ def _render_plain(data: dict[str, Any]) -> None:
     approved = data.get("approved", False)
 
     print("=" * 64)
-    print(f"{vsym}  {data.get('title', 'releaseproof proof')}")
+    print(f"{vsym}  {data.get('title', 'evidenza proof')}")
     print("=" * 64)
     print(f"  Verdict:     {verdict}")
     print(f"  Proof ID:    {data.get('proof_id','')}")
