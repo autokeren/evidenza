@@ -75,15 +75,15 @@ def load_config(path: str | None = None) -> RuntimeConfig:
             cfg.deploy_agentcore = bool(d["agentcore"])
 
     # Environment overrides (highest precedence).
-    if v := _coalesce(os.environ.get("RELEASEPROOF_PROVIDER")):
+    if v := _coalesce(os.environ.get("EVIDENZA_PROVIDER")):
         cfg.model_provider = v
-    if v := _coalesce(os.environ.get("RELEASEPROOF_MODEL_ID")):
+    if v := _coalesce(os.environ.get("EVIDENZA_MODEL_ID")):
         cfg.model_id = v
-    if v := _coalesce(os.environ.get("RELEASEPROOF_PROXY_URL")):
+    if v := _coalesce(os.environ.get("EVIDENZA_PROXY_URL")):
         cfg.proxy_base_url = v
-    if v := _coalesce(os.environ.get("RELEASEPROOF_PROXY_KEY")):
+    if v := _coalesce(os.environ.get("EVIDENZA_PROXY_KEY")):
         cfg.proxy_api_key = v
-    if v := _coalesce(os.environ.get("RELEASEPROOF_MAX_ITER")):
+    if v := _coalesce(os.environ.get("EVIDENZA_MAX_ITER")):
         try:
             cfg.max_iterations = int(v)
         except ValueError:

@@ -2,21 +2,36 @@
 
 **Evidence-led autonomous release verification agent built on the [Strands Agents SDK](https://strandsagents.com/).**
 
-evidenza autonomously plans acceptance criteria, records real verification
-evidence, and emits a **SHIP / BLOCKED / NEEDS_HUMAN_REVIEW** verdict. The agent
-handles the routine verification work in the background — it only surfaces to a
-human for the one decision that matters: *should we ship?*
+evidenza gathers concrete verification evidence — git SHA, real test output,
+file inspection, live URL checks — and turns it into a **SHIP / BLOCKED /
+NEEDS_HUMAN_REVIEW** verdict. It does the routine release-verification work
+autonomously, then pauses for a human at exactly one moment: *should we ship?*
 
 Built for the **Agents for Humans** hackathon (AWS × Strands Agents SDK).
+Track: **Professional Agents**.
 
 ---
 
-## 🚀 Quickstart for Judges (No API Key Required)
+## The idea in one sentence
 
-Judges can test the proof-rendering system without any external API keys:
+> An agent that won't deploy unless the *evidence* says ship **and** a *human* approves.
+
+Two safety properties make that guarantee real:
+
+1. **Evidence-led verdict** — `SHIP` requires every acceptance criterion to be
+   `passed`, computed from recorded evidence, never from the model's assertion.
+2. **Human-in-the-loop at impact** — the `deploy` tool is gated by a Strands
+   `BeforeToolCallEvent` hook that raises an interrupt. No auto-ship, ever.
+
+---
+
+## 🚀 Quickstart for Judges (zero API keys)
+
+You can evaluate the whole proof system without any model, proxy, or API key —
+the evidence *is* the artifact:
 
 ```bash
-git clone https://github.com/ajat/evidenza
+git clone https://github.com/autokeren/evidenza
 cd evidenza
 pip install -e .
 
@@ -24,29 +39,27 @@ pip install -e .
 evidenza --proof-replay examples/demo/proof-run.json
 ```
 
-This renders a visual Release Card from a pre-recorded proof artifact.
-It does not run tests dynamically or require any model provider.
+This renders a visual **Release Card** from a pre-recorded proof artifact:
+the criteria, their status, the evidence, the verdict, and the human approval.
+
+For the full interactive demo (which records evidence live), see
+[`examples/demo/DEMO.md`](./examples/demo/DEMO.md).
 
 ---
 
-## 🔧 Full Demo (Requires Model Access)
+## 🎬 Run the full demo
+
+The deterministic demo orchestrates the whole flow with real components — no
+flaky model calls, so it records reliably for the demo video:
 
 ```bash
-# Option A: AWS Bedrock (default)
-export AWS_PROFILE=default
-evidenza "/safe-deploy build a checkout API with tests"
-
-# Option B: Anthropic
-export ANTHROPIC_API_KEY=sk-...
-evidenza --provider anthropic "/safe-deploy build a checkout API with tests"
+python examples/demo/run_demo.py            # SHIP path (all tests pass)
+python examples/demo/run_demo.py --block    # BLOCKED path (simulated failure)
 ```
 
-The agent will:
-1. **Plan** acceptance criteria for the release
-2. **Build** the app and **record** real test evidence
-3. **Emit** a verdict (SHIP / BLOCKED / NEEDS_HUMAN_REVIEW)
-4. **Pause** for human approval if SHIP (human-in-the-loop)
-5. **Publish** only after approval, bound to the verified git commit
+It walks through: capture git SHA → run the real pytest suite → record each
+test as an acceptance criterion → compute the verdict → **attempt deploy without
+approval (blocked)** → human approves → deploy proceeds → render the Release Card.
 
 ---
 
@@ -54,91 +67,100 @@ The agent will:
 
 ```
                    ┌──────────────────────────┐
-                   │     evidenza CLI      │
+                   │      evidenza CLI        │
                    └────────────┬─────────────┘
                                 │
                    ┌────────────▼─────────────┐
-                   │  Strands Agent (orchestrator) │
-                   │  agent loop + conv mgr + hooks │
+                   │  Strands Agent (loop)    │
+                   │  conversation manager    │
                    └────────────┬─────────────┘
                                 │
             ┌───────────────────┼───────────────────┐
             │                   │                   │
-  ┌─────────▼─────┐   ┌────────▼────────┐  ┌──────▼───────┐
-  │  7 Lean Tools  │   │  Safety Hooks     │  │ Proof       │
-  │  (Strands      │   │  BeforeToolCall   │  │ Interrupt   │
-  │   @tool)       │   │  AfterToolCall   │  │ (SHIP gate)  │
-  │                │   │  - secret scan    │  │              │
-  │  read_file     │   │  - loop detect    │  │              │
-  │  write_file    │   │                   │  │              │
-  │  shell         │   │                   │  │              │
-  │  git_commit    │   │                   │  │              │
-  │  proof         │   │                   │  │              │
-  │  deploy        │   │                   │  │              │
-  │  verify_url    │   │                   │  │              │
-  └────────────────┘   └───────────────────┘  └──────────────┘
-                                │
-                   ┌────────────▼─────────────┐
-                   │  Model Provider            │
-                   │  (Bedrock / Anthropic /    │
-                   │   OpenAI / custom)         │
-                   └───────────────────────────┘
+  ┌─────────▼─────────┐  ┌──────▼────────┐  ┌───────▼────────┐
+  │  7 tools (@tool)  │  │  approval hook │  │  proof system  │
+  │  read_file        │  │  (interrupt)   │  │  ProofManager  │
+  │  write_file       │  │  gates deploy  │  │  verdict + JSON│
+  │  shell            │  └───────────────┘  │  replay card   │
+  │  git_sha          │                     └────────────────┘
+  │  git_commit       │
+  │  verify_url       │
+  │  deploy           │
+  └───────────────────┘
+            │
+  ┌─────────▼──────────────────────────┐
+  │  Model provider                    │
+  │  proxy (default) / anthropic /     │
+  │  bedrock                           │
+  └────────────────────────────────────┘
 ```
 
-See [ARCHITECTURE.md](./ARCHITECTURE.md) for the full design.
+The default provider is a **local Anthropic-compatible proxy** (no cloud
+credentials needed for dev/demo). Direct Anthropic and Amazon Bedrock are also
+supported. See [`ARCHITECTURE.md`](./ARCHITECTURE.md).
 
 ---
 
 ## 🛠️ Installation
 
-### Prerequisites
-- Python 3.11+
-- AWS account with Bedrock model access (optional — Anthropic/OpenAI also supported)
-
-### Install
+Prerequisites: Python 3.11+.
 
 ```bash
-git clone https://github.com/ajat/evidenza
+git clone https://github.com/autokeren/evidenza
 cd evidenza
 pip install -e .
 
-# With AgentCore support (optional)
+# Optional: Amazon Bedrock AgentCore support
 pip install -e ".[agentcore]"
-
-# For development
-pip install -e ".[dev]"
 ```
+
+### Configuration
+
+Copy `config.example.yaml` → `config.yaml` (or use env vars). Default provider
+is `proxy`, pointed at a local Anthropic-Messages-compatible proxy:
+
+```yaml
+model:
+  provider: proxy          # proxy | anthropic | bedrock
+  id: claude-sonnet-4-20250514
+proxy:
+  base_url: http://127.0.0.1:8787   # claude-cf (glm-5.2)
+  api_key: dummy
+```
+
+Overrides via env: `EVIDENZA_PROVIDER`, `EVIDENZA_MODEL_ID`,
+`EVIDENZA_PROXY_URL`, `EVIDENZA_PROXY_KEY`.
 
 ---
 
 ## 🧪 Testing
 
 ```bash
-pytest tests/
+pytest tests/          # 28 tests, deterministic (no network/model needed)
 ```
 
 ---
 
-## 📦 What It Does
+## 📦 What it does
 
 | Phase | Action | Human? |
 |---|---|---|
-| **Plan** | Agent creates acceptance criteria from the task | No |
-| **Build** | Agent writes code, runs tests | No |
-| **Record** | Agent records real test output as evidence | No |
-| **Verdict** | Agent emits SHIP / BLOCKED / NEEDS_HUMAN_REVIEW | No |
-| **Approval** | If SHIP, agent pauses and asks human to approve | ✅ **Yes** |
-| **Publish** | After approval, agent deploys (bound to verified commit) | No |
-| **Safety** | If code changes after approval, proof becomes stale → deploy blocked | No |
+| **Plan** | Create acceptance criteria for the release | No |
+| **Record** | Capture git SHA + run tests + read files as evidence | No |
+| **Verdict** | Compute SHIP / BLOCKED / NEEDS_HUMAN_REVIEW from evidence | No |
+| **Approval** | If SHIP, `deploy` raises an interrupt → human must approve | ✅ **Yes** |
+| **Publish** | Only after approval, deploy proceeds | No |
+| **Replay** | Proof JSON renders a Release Card, zero API keys | — |
 
 ---
 
 ## 🎯 Agents for Humans Hackathon
 
-This project is submitted to the **Agents for Humans** hackathon (AWS × Strands Agents SDK):
 - **Track:** Professional Agents
 - **Build period:** August 10 – September 14, 2026
 - **Demo video:** [YouTube link TBD]
+- **Architecture:** Strands Agents SDK orchestrator + 7 lean tools + a
+  human-in-the-loop approval hook + a replayable proof system.
 
 ---
 
@@ -151,13 +173,12 @@ safe-deploy workflow) builds upon ideas explored in the author's prior
 open-source project, [autokeren](https://github.com/autokeren/autokeren)
 (MIT license).
 
-evidenza is a new, lean codebase written from scratch during the
-submission period, using the Strands Agents SDK as the agent orchestrator.
-No code was directly copied from autokeren; the concepts were reimplemented
-in a minimal form tailored to demonstrate the release verification agent
-pattern with Strands.
-
-The author is the original creator of autokeren and owns its copyright.
+evidenza is a new, lean codebase written from scratch during the submission
+period, using the Strands Agents SDK as the agent orchestrator. No code was
+directly copied from autokeren; the concepts were reimplemented in a minimal
+form tailored to demonstrate the release-verification agent pattern with
+Strands. The author is the original creator of autokeren and owns its
+copyright.
 
 ---
 

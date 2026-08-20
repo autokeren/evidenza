@@ -50,8 +50,8 @@ def test_verdict_partial_match():
 def test_config_defaults():
     # load_config with no file and no env should yield the documented defaults.
     # Clear env to avoid leaking real settings into the test.
-    env_keys = ["RELEASEPROOF_PROVIDER", "RELEASEPROOF_MODEL_ID",
-                "RELEASEPROOF_PROXY_URL", "RELEASEPROOF_PROXY_KEY", "RELEASEPROOF_MAX_ITER"]
+    env_keys = ["EVIDENZA_PROVIDER", "EVIDENZA_MODEL_ID",
+                "EVIDENZA_PROXY_URL", "EVIDENZA_PROXY_KEY", "EVIDENZA_MAX_ITER"]
     saved = {k: os.environ.pop(k, None) for k in env_keys}
     try:
         # Point at a path that does not exist so only defaults apply.
@@ -68,9 +68,9 @@ def test_config_defaults():
 
 def test_config_env_override(monkeypatch=None):
     # Env vars win over defaults.
-    os.environ["RELEASEPROOF_PROVIDER"] = "bedrock"
-    os.environ["RELEASEPROOF_MODEL_ID"] = "anthropic.claude-sonnet-4-20250514-v1:0"
-    os.environ["RELEASEPROOF_MAX_ITER"] = "5"
+    os.environ["EVIDENZA_PROVIDER"] = "bedrock"
+    os.environ["EVIDENZA_MODEL_ID"] = "anthropic.claude-sonnet-4-20250514-v1:0"
+    os.environ["EVIDENZA_MAX_ITER"] = "5"
     try:
         cfg = load_config("/nonexistent/config.yaml")
         assert cfg.model_provider == "bedrock"
@@ -78,6 +78,6 @@ def test_config_env_override(monkeypatch=None):
         assert cfg.max_iterations == 5
         assert cfg.is_proxy is False
     finally:
-        del os.environ["RELEASEPROOF_PROVIDER"]
-        del os.environ["RELEASEPROOF_MODEL_ID"]
-        del os.environ["RELEASEPROOF_MAX_ITER"]
+        del os.environ["EVIDENZA_PROVIDER"]
+        del os.environ["EVIDENZA_MODEL_ID"]
+        del os.environ["EVIDENZA_MAX_ITER"]
