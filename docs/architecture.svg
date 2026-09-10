@@ -1,0 +1,116 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 720" font-family="ui-monospace, 'SF Mono', Menlo, monospace">
+  <defs>
+    <marker id="arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#475569"/>
+    </marker>
+    <marker id="arrRed" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#dc2626"/>
+    </marker>
+    <marker id="arrGreen" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#16a34a"/>
+    </marker>
+  </defs>
+
+  <style>
+    .title { font-size: 22px; font-weight: 700; fill: #0f172a; }
+    .sub { font-size: 12px; fill: #64748b; }
+    .box { fill: #ffffff; stroke: #334155; stroke-width: 1.5; rx: 10; }
+    .hdr { font-size: 14px; font-weight: 700; fill: #0f172a; }
+    .txt { font-size: 11px; fill: #334155; }
+    .small { font-size: 10px; fill: #64748b; }
+    .tag { font-size: 10px; font-weight: 700; }
+  </style>
+
+  <text x="480" y="34" text-anchor="middle" class="title">evidenza — Architecture</text>
+  <text x="480" y="52" text-anchor="middle" class="sub">Evidence-led autonomous release verification · Strands Agents SDK</text>
+
+  <!-- CLI -->
+  <rect x="360" y="70" width="240" height="52" class="box" rx="10"/>
+  <text x="480" y="92" text-anchor="middle" class="hdr">evidenza CLI</text>
+  <text x="480" y="108" text-anchor="middle" class="txt">prompt · --proof-replay</text>
+
+  <line x1="480" y1="122" x2="480" y2="150" stroke="#475569" stroke-width="1.5" marker-end="url(#arr)"/>
+
+  <!-- Strands Agent -->
+  <rect x="300" y="150" width="360" height="76" class="box" rx="10"/>
+  <text x="480" y="174" text-anchor="middle" class="hdr">Strands Agent</text>
+  <text x="480" y="190" text-anchor="middle" class="txt">agent loop · conversation manager</text>
+  <text x="480" y="206" text-anchor="middle" class="small">system prompt drives: verify → evidence → verdict</text>
+
+  <!-- Branches from agent -->
+  <line x1="480" y1="226" x2="200" y2="270" stroke="#475569" stroke-width="1.5" marker-end="url(#arr)"/>
+  <line x1="480" y1="226" x2="480" y2="270" stroke="#475569" stroke-width="1.5" marker-end="url(#arr)"/>
+  <line x1="480" y1="226" x2="760" y2="270" stroke="#475569" stroke-width="1.5" marker-end="url(#arr)"/>
+
+  <!-- Tools -->
+  <rect x="60" y="270" width="280" height="150" class="box" rx="10"/>
+  <text x="200" y="292" text-anchor="middle" class="hdr">7 Tools (@tool)</text>
+  <text x="80" y="316" class="txt">read_file      write_file</text>
+  <text x="80" y="334" class="txt">shell          git_sha</text>
+  <text x="80" y="352" class="txt">git_commit     verify_url</text>
+  <text x="80" y="370" class="txt">deploy  <tspan fill="#dc2626" font-weight="700">← gated</tspan></text>
+  <text x="80" y="396" class="small">evidence sources: files, commands,</text>
+  <text x="80" y="410" class="small">git state, live URLs</text>
+
+  <!-- Proof system -->
+  <rect x="360" y="270" width="240" height="150" class="box" rx="10"/>
+  <text x="480" y="292" text-anchor="middle" class="hdr">Proof System</text>
+  <text x="480" y="316" text-anchor="middle" class="txt">ProofManager</text>
+  <text x="480" y="334" text-anchor="middle" class="txt">plan → record → report</text>
+  <text x="480" y="352" text-anchor="middle" class="txt">→ approve</text>
+  <text x="480" y="376" text-anchor="middle" class="small">compute_verdict():</text>
+  <text x="480" y="392" text-anchor="middle" class="small">SHIP / BLOCKED / NEEDS_HUMAN_REVIEW</text>
+
+  <!-- Approval hook -->
+  <rect x="640" y="270" width="260" height="150" class="box" rx="10"/>
+  <text x="770" y="292" text-anchor="middle" class="hdr">Approval Hook</text>
+  <text x="770" y="316" text-anchor="middle" class="txt">BeforeToolCallEvent</text>
+  <text x="770" y="334" text-anchor="middle" class="txt">raises InterruptException</text>
+  <text x="770" y="352" text-anchor="middle" class="txt">when proof ≠ approved</text>
+  <text x="770" y="376" text-anchor="middle" class="small">deploy blocked until a human</text>
+  <text x="770" y="392" text-anchor="middle" class="small">approves the SHIP verdict</text>
+
+  <!-- Human -->
+  <rect x="740" y="470" width="160" height="52" class="box" rx="10" stroke="#16a34a" stroke-width="2"/>
+  <text x="820" y="492" text-anchor="middle" class="hdr" fill="#16a34a">HUMAN</text>
+  <text x="820" y="508" text-anchor="middle" class="txt">approve / reject</text>
+
+  <line x1="770" y1="420" x2="810" y2="470" stroke="#dc2626" stroke-width="1.5" stroke-dasharray="5,4" marker-end="url(#arrRed)"/>
+  <text x="726" y="448" class="small" fill="#dc2626">interrupt</text>
+
+  <line x1="820" y1="522" x2="700" y2="428" stroke="#16a34a" stroke-width="1.5" stroke-dasharray="5,4" marker-end="url(#arrGreen)"/>
+  <text x="740" y="540" class="small" fill="#16a34a">resume with response</text>
+
+  <!-- Evidence flow: tools -> proof -->
+  <line x1="340" y1="345" x2="360" y2="345" stroke="#475569" stroke-width="1.5" marker-end="url(#arr)"/>
+  <text x="345" y="338" text-anchor="middle" class="small">evidence</text>
+
+  <!-- Proof -> verdict -->
+  <line x1="480" y1="420" x2="480" y2="470" stroke="#475569" stroke-width="1.5" marker-end="url(#arr)"/>
+
+  <!-- Verdict -->
+  <rect x="360" y="470" width="240" height="56" class="box" rx="10" stroke="#7c3aed" stroke-width="1.5"/>
+  <text x="480" y="492" text-anchor="middle" class="hdr" fill="#7c3aed">Verdict</text>
+  <text x="480" y="510" text-anchor="middle" class="txt">computed from criteria, not model claims</text>
+
+  <!-- Proof artifact / replay -->
+  <line x1="360" y1="560" x2="300" y2="560" stroke="#475569" stroke-width="0" />
+  <line x1="480" y1="526" x2="480" y2="570" stroke="#475569" stroke-width="1.5" marker-end="url(#arr)"/>
+
+  <rect x="330" y="570" width="300" height="80" class="box" rx="10" stroke="#0ea5e9" stroke-width="1.5"/>
+  <text x="480" y="592" text-anchor="middle" class="hdr" fill="#0ea5e9">Proof Artifact (JSON)</text>
+  <text x="480" y="612" text-anchor="middle" class="txt">criteria + evidence + verdict + approval</text>
+  <text x="480" y="630" text-anchor="middle" class="small">replayable Release Card — zero API keys</text>
+
+  <!-- Model provider -->
+  <rect x="40" y="470" width="240" height="76" class="box" rx="10"/>
+  <text x="160" y="492" text-anchor="middle" class="hdr">Model Provider</text>
+  <text x="160" y="510" text-anchor="middle" class="txt">proxy (default) · anthropic · bedrock</text>
+  <text x="160" y="528" text-anchor="middle" class="small">pluggable Strands model</text>
+
+  <line x1="160" y1="420" x2="160" y2="470" stroke="#475569" stroke-width="1.5" marker-end="url(#arr)"/>
+
+  <!-- Safety callout -->
+  <rect x="330" y="666" width="300" height="40" rx="10" fill="#f0fdf4" stroke="#16a34a" stroke-width="1.5"/>
+  <text x="480" y="690" text-anchor="middle" class="tag" fill="#16a34a">SAFETY: no auto-ship — human approves every deploy</text>
+</svg>

@@ -65,35 +65,7 @@ approval (blocked)** → human approves → deploy proceeds → render the Relea
 
 ## 🏗️ Architecture
 
-```
-                   ┌──────────────────────────┐
-                   │      evidenza CLI        │
-                   └────────────┬─────────────┘
-                                │
-                   ┌────────────▼─────────────┐
-                   │  Strands Agent (loop)    │
-                   │  conversation manager    │
-                   └────────────┬─────────────┘
-                                │
-            ┌───────────────────┼───────────────────┐
-            │                   │                   │
-  ┌─────────▼─────────┐  ┌──────▼────────┐  ┌───────▼────────┐
-  │  7 tools (@tool)  │  │  approval hook │  │  proof system  │
-  │  read_file        │  │  (interrupt)   │  │  ProofManager  │
-  │  write_file       │  │  gates deploy  │  │  verdict + JSON│
-  │  shell            │  └───────────────┘  │  replay card   │
-  │  git_sha          │                     └────────────────┘
-  │  git_commit       │
-  │  verify_url       │
-  │  deploy           │
-  └───────────────────┘
-            │
-  ┌─────────▼──────────────────────────┐
-  │  Model provider                    │
-  │  proxy (default) / anthropic /     │
-  │  bedrock                           │
-  └────────────────────────────────────┘
-```
+![Architecture diagram](docs/architecture.svg)
 
 The default provider is a **local Anthropic-compatible proxy** (no cloud
 credentials needed for dev/demo). Direct Anthropic and Amazon Bedrock are also
