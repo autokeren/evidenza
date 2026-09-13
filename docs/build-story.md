@@ -4,86 +4,48 @@ Agents for Humans: I built a release agent that refuses to ship without evidence
 
 ---
 
-# BODY (paste ke editor)
+# BODY (paste ke editor — udah di bawah 3000 karakter)
 
-Every team I know ships releases on vibes. A tired reviewer squints at a green CI badge, approves the deploy, and moves on. The badge says *build passed* — but nobody can answer: what exactly was verified, against what evidence, for which commit, and who approved it? When a release breaks at 2am, that answer can't be reconstructed, because the review happened in someone's head.
+Every team ships releases on vibes. A tired reviewer squints at a green CI badge, approves, and moves on. The badge says *build passed* — but nobody can answer: what exactly was verified, against what evidence, for which commit, and who approved it? When a release breaks at 2am, that answer can't be reconstructed. The review happened in someone's head.
 
-That's the repetitive, judgment-heavy task I went after for the **Agents for Humans Hackathon**: release verification. So I built **evidenza** — an evidence-led autonomous release verification agent on the **Strands Agents SDK**.
+For the Agents for Humans Hackathon I went after that repetitive, judgment-heavy task: release verification. I built **evidenza** — an evidence-led autonomous release verification agent on the **Strands Agents SDK**.
 
-## What it does
+Given a release task, the agent runs the whole flow end to end: capture the exact git commit (`git_sha`), run the real test suite (`shell`), inspect manifests and configs (`read_file`), check endpoints (`verify_url`), record every acceptance criterion with its raw evidence into a proof artifact (JSON), and compute a verdict — SHIP / BLOCKED / NEEDS_HUMAN_REVIEW — from evidence, never from the model's assertion.
 
-Given a release task, the agent runs the whole verification flow end to end:
-
-1. **Capture** the exact git commit being released (`git_sha`)
-2. **Run** the release candidate's real test suite (`shell`)
-3. **Inspect** manifests, configs, and source (`read_file`)
-4. **Check** deployed endpoints when applicable (`verify_url`)
-5. **Record** every acceptance criterion with its raw evidence in a proof artifact (JSON)
-6. **Compute a verdict** — SHIP / BLOCKED / NEEDS_HUMAN_REVIEW — from the evidence, never from the model's assertion
-7. **Pause for a human** at exactly one moment: should we ship?
-8. **Deploy** only after explicit human approval
-
-Seven lean tools total, each a small Strands `@tool` function. The interesting part isn't the tools — it's the gate.
-
-## The pattern that makes it "agents for humans"
-
-The deploy tool is the only one with real-world impact, so it's the only one that's gated. A Strands `BeforeToolCallEvent` hook intercepts the call and raises an `InterruptException` if no human has approved the proof:
+Seven lean `@tool` functions. The interesting part is the gate. Deploy is the only tool with real-world impact, so it's the only one gated. A Strands `BeforeToolCallEvent` hook intercepts the call and raises `InterruptException` until a human approves:
 
 ```python
 async def approval_hook(event: BeforeToolCallEvent) -> None:
-    tool_use = event.tool_use
-    if tool_use.get("name") != "deploy":
+    if event.tool_use.get("name") != "deploy":
         return
-
-    proof_id = (tool_use.get("input") or {}).get("proof_id")
-    proof = proofs.get(proof_id)
-
+    proof = proofs.get(event.tool_use["input"].get("proof_id"))
     if proof is None or proof.verdict != "SHIP" or not proof.approval:
         raise InterruptException(Interrupt(
-            id="v1:before_tool_call:deploy:approve_ship",
             name="approve_ship",
-            reason=(
-                "Agent wants to DEPLOY. Human approval required. "
-                "Reply 'yes' to approve, 'no' to reject."
-            ),
+            reason="Human approval required. Reply 'yes' to approve.",
         ))
 ```
 
-No auto-ship, ever. The agent is autonomous up to the point of impact, and human-in-the-loop at exactly the moment that matters. Everything before that — running tests, collecting evidence, computing the verdict — is exactly the kind of routine work an agent should take off a human's plate.
+No auto-ship, ever. The agent is autonomous up to the point of impact, human-in-the-loop at the moment that matters. Running tests and collecting evidence is exactly the routine work an agent should take off a human's plate.
 
-## The evidence IS the artifact
+The evidence IS the artifact: every run saves a proof JSON (criteria, status, raw evidence, verdict, approval) that anyone can replay later with **zero API keys**:
 
-My favorite part: every run is saved as a proof artifact — a JSON file with each criterion, its status, its raw evidence, the verdict, and the human approval. Anyone can replay it later with **zero API keys**:
+`evidenza --proof-replay examples/demo/proof-run.json`
 
-```
-evidenza --proof-replay examples/demo/proof-run.json
-```
+Two lessons worth sharing:
 
-That renders a Release Card: the criteria, the evidence, the verdict, and who approved it. Judges, auditors, and teammates can verify a release decision *after the fact* — which is the whole thing I was trying to fix.
+- Verdicts from evidence, not from the model. The LLM orchestrates; deterministic code decides. That split makes an agent trustworthy enough to gate a deploy.
+- Strands interrupts are THE human-in-the-loop primitive. One hook, one exception — the agent parks until a human responds. No polling, no state hacks.
 
-## What I learned building it
-
-- **Verdicts from evidence, not from the model.** The agent doesn't decide SHIP by "feeling confident" — `compute_verdict` is plain code over recorded evidence. LLMs orchestrate; deterministic code decides. That split made the agent trustworthy enough to gate a deploy.
-- **Strands interrupts are the human-in-the-loop primitive.** One hook, one exception, and the agent cleanly parks until a human responds. No polling, no side-channel state hacks.
-- **Deterministic demos are a feature.** For the demo video I didn't want a flaky model call deciding what the recording looks like, so the demo runner uses the real components with a deterministic flow. It records the same way every single time.
-
-## Stack
-
-- **Strands Agents SDK** (open source, production-ready, built by teams at AWS) as the agent orchestrator
-- 7 lean `@tool` functions: `git_sha`, `git_commit`, `shell`, `read_file`, `write_file`, `verify_url`, `deploy` (gated)
-- Human-in-the-loop approval via `BeforeToolCallEvent` + `InterruptException`
-- Provider-agnostic runtime: local Anthropic-compatible proxy for dev/demo, **Amazon Bedrock** and **Amazon Bedrock AgentCore** supported for real deployments
-
-## Try it
-
+Try it:
 - Code: https://github.com/autokeren/evidenza (MIT)
 - Demo video: https://youtu.be/7rXDJE-V8eQ
 - Replay the proof yourself, no API key: `evidenza --proof-replay examples/demo/proof-run.json`
 
-The thesis of this hackathon, made concrete: the agent does the work, the human keeps the judgment call that matters.
+The hackathon thesis, made concrete: the agent does the work, the human keeps the judgment call that matters.
 
 ---
 
 # HASHTAGS (paste di field tags bawah post)
 
-#strands #agentic-ai #agents-for-humans #amazon-bedrock-agentcore #ai-agents #devops
+#strands #agentic-ai #agents-for-humans #amazon-bedrock-agentcore
