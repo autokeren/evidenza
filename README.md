@@ -131,6 +131,9 @@ pytest tests/          # 28 tests, deterministic (no network/model needed)
 - **Track:** Professional Agents
 - **Build period:** August 10 – September 14, 2026
 - **Demo video:** https://youtu.be/7rXDJE-V8eQ
+- **Live demo:** https://evidenza.autokeren.com — replay Release Cards in your
+  browser (SHIP/BLOCKED examples, or paste any proof artifact), zero API keys.
+  Source: [`demo-site/`](demo-site/) (Cloudflare Worker).
 - **Architecture:** Strands Agents SDK orchestrator + 7 lean tools + a
   human-in-the-loop approval hook + a replayable proof system.
 
