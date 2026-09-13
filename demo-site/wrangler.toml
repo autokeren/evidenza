@@ -1,0 +1,8 @@
+name = "evidenza-demo"
+main = "src/worker.js"
+compatibility_date = "2026-09-01"
+workers_dev = true
+
+routes = [
+  { pattern = "evidenza.autokeren.com", custom_domain = true }
+]
