@@ -109,5 +109,5 @@ Professional Agents
 ## Links
 
 - Code: https://github.com/autokeren/evidenza
-- Demo video: [TBD — YouTube]
+- Demo video: https://youtu.be/7rXDJE-V8eQ
 - Replay the proof yourself (no API key): `evidenza --proof-replay examples/demo/proof-run.json`

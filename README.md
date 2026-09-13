@@ -130,7 +130,7 @@ pytest tests/          # 28 tests, deterministic (no network/model needed)
 
 - **Track:** Professional Agents
 - **Build period:** August 10 – September 14, 2026
-- **Demo video:** [YouTube link TBD]
+- **Demo video:** https://youtu.be/7rXDJE-V8eQ
 - **Architecture:** Strands Agents SDK orchestrator + 7 lean tools + a
   human-in-the-loop approval hook + a replayable proof system.
 
